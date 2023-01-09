@@ -1,32 +1,68 @@
 import { Component } from "react";
-
-import logo from "./logo.svg";
+import CardList from "./components/card_list/card_list.component";
 import "./App.css";
+import SearchBox from "./components/search_box/search_box.component";
 
 class App extends Component {
   constructor() {
     super();
 
     this.state = {
-      name: {
-        'firstName': 'Godsend',
-        'lastName': 'Joseph',
-      },
+      monsters: [],
+      searchField: "",
     };
+    console.log("constructor");
   }
 
+  componentDidMount() {
+    console.log("componentDidMount");
+    this.fetchMonsters();
+  }
+
+  fetchMonsters() {
+    try {
+      fetch("https://jsonplaceholder.typicode.com/users")
+        .then((response) => response.json())
+        .then((users) =>
+          this.setState(() => {
+            return {
+              monsters: users,
+            };
+          })
+        );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  onSearchChange = (event) => {
+    const searchField = event.target.value.toLocaleLowerCase();
+
+    this.setState(() => {
+      return {
+        searchField,
+      };
+    });
+  };
+
   render() {
+    const { monsters, searchField } = this.state;
+    const { onSearchChange } = this;
+
+    const filteredMonster = monsters.filter((monster) => {
+      return monster.name.toLocaleLowerCase().includes(searchField);
+    });
+
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>Hi, my name is {this.state.name.firstName} {this.state.name.lastName}</p>
-          <button onClick={() => {
-            this.setState({
-              name: 'Great',
-            })
-          }}>Change name</button>
-        </header>
+      <h1 className="app-title">Monster Search</h1>
+        <SearchBox
+          onChangeHandler={onSearchChange}
+          placeholder="Search Monsters"
+          className="search_box"
+        />
+
+        <CardList monsters={filteredMonster} />
       </div>
     );
   }
