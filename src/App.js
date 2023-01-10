@@ -4,6 +4,8 @@ import "./App.css";
 import SearchBox from "./components/search_box/search_box.component";
 
 class App extends Component {
+
+  // calling constructor 
   constructor() {
     super();
 
@@ -11,14 +13,14 @@ class App extends Component {
       monsters: [],
       searchField: "",
     };
-    console.log("constructor");
   }
 
+  // this calls the state (works well just like init state in flutter)
   componentDidMount() {
-    console.log("componentDidMount");
     this.fetchMonsters();
   }
 
+  // function to call the API to get users name and email
   fetchMonsters() {
     try {
       fetch("https://jsonplaceholder.typicode.com/users")
@@ -35,6 +37,7 @@ class App extends Component {
     }
   }
 
+  // search functions
   onSearchChange = (event) => {
     const searchField = event.target.value.toLocaleLowerCase();
 
